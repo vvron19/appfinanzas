@@ -6,92 +6,103 @@
     <title>Gestor de Finanzas</title>
     
     <link rel="icon" href="logo.png?v=3" type="image/png">
-    <script src="https://cdn.tailwindcss.com"></script>
     
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@0.395.0/dist/lucide.js" defer></script> 
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
         tailwind.config = {
-      
             darkMode: 'class', 
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-               
                     },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        }
+                    }
                 }
             }
         }
     </script>
+
+    <style>
+        /* MODO PRIVACIDAD: Fuerza el desenfoque */
+        body.privacy-active .privacy-sensitive {
+            filter: blur(8px) !important;
+            -webkit-filter: blur(8px) !important;
+            user-select: none;
+            cursor: default;
+            transition: filter 0.3s ease;
+        }
+        
+        .privacy-sensitive {
+            transition: filter 0.3s ease;
+        }
+
+        /* Animaciones */
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up { animation: slideUpFade 0.5s ease-out forwards; opacity: 0; }
+        
+        /* Pestañas Simples (Sin animación compleja para evitar bloqueos) */
+        .tab-content { display: none; }
+        .tab-content.activa { display: block; }
+    </style>
     
     <style type="text/tailwindcss">
-        @keyframes slideInRight { from { transform: translateX(100%);
-            opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1;
-            } to { opacity: 0; } }
-        .toast { animation: slideInRight 0.3s ease-out forwards;
-            }
-        .toast.hiding { animation: fadeOut 0.3s ease-in forwards;
-            }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
         
-        body { font-family: 'Inter', sans-serif;
-            @apply dark:bg-gray-900; }
-        .vista { display: none;
-            }
-        #loading-view.activa, #login-view.activa, #register-view.activa { display: flex;
-            }
-        #main-app-view.activa { display: block;
-            }
-
-        .modal { display: none;
-            }
-        .modal.activa { display: flex;
-            }
-
-        #chart-container { position: relative; height: 300px; width: 100%; max-width: 300px;
-            margin: 0 auto; }
-        #history-chart-container { position: relative; height: 350px; width: 100%;
-            margin: 0 auto; }
-
-        #ai-chat-window { scroll-behavior: smooth;
-            }
-        .chat-message { padding: 0.75rem; border-radius: 0.5rem; max-width: 85%; line-height: 1.5;
-            }
-        .bot-message { @apply bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200; align-self: flex-start;
-            }
-        .user-message { @apply bg-indigo-50 text-indigo-900 dark:bg-indigo-900 dark:text-indigo-100; align-self: flex-end; margin-left: auto;
-            }
+        .toast { animation: slideInRight 0.3s ease-out forwards; }
+        .toast.hiding { animation: fadeOut 0.3s ease-in forwards; }
         
-        #login-view, #register-view { @apply dark:bg-gray-900;
-            position: relative !important; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; @apply dark:bg-gray-900; }
+        .vista { display: none; }
+        #loading-view.activa, #login-view.activa, #register-view.activa { display: flex; }
+        #main-app-view.activa { display: block; }
+
+        .modal { display: none; }
+        .modal.activa { display: flex; }
+
+        #chart-container { position: relative; height: 300px; width: 100%; max-width: 300px; margin: 0 auto; }
+        #history-chart-container { position: relative; height: 350px; width: 100%; margin: 0 auto; }
+
+        #ai-chat-window { scroll-behavior: smooth; }
+        .chat-message { padding: 0.75rem; border-radius: 0.5rem; max-width: 85%; line-height: 1.5; }
+        .bot-message { @apply bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200; align-self: flex-start; }
+        .user-message { @apply bg-teal-50 text-teal-900 dark:bg-teal-900 dark:text-teal-100; align-self: flex-end; margin-left: auto; }
+        
+        #login-view, #register-view { @apply dark:bg-gray-900; position: relative !important; overflow: hidden; }
+        
+        /* FONDO */
         #login-view::before, #register-view::before {
             content: "";
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; 
-            background-image: url('business-man-analysing-market-report-with-business-analytics-dashboard-virtual-screen.jpg');
+            background-image: url('fondo.png');
             background-size: cover; background-position: center; filter: blur(8px);
             -webkit-filter: blur(8px); background-color: rgba(0,0,0,0.35); 
         }
-        #login-view > div, #register-view > div { z-index: 10;
-            position: relative; }
-        #login-view p, #register-view p { color: white !important;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.6); }
-        #login-view p a, #register-view p a { color: #c7d2fe !important;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.6); }
-        #login-view p a:hover, #register-view p a:hover { color: #a5b4fc !important;
-            }
+        
+        #login-view > div, #register-view > div { z-index: 10; position: relative; }
+        #login-view p, #register-view p { color: white !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); }
+        #login-view p a, #register-view p a { color: #99f6e4 !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); } 
+        #login-view p a:hover, #register-view p a:hover { color: #5eead4 !important; }
 
-        .tab-content { display: none;
-            }
-        .tab-content.activa { display: block;
-            }
-        .tab-button.activa { @apply border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400;
-            }
-        .tab-button { @apply border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200;
-            }
+        .tab-button.activa { @apply border-teal-600 text-teal-600 dark:border-teal-400 dark:text-teal-400; }
+        .tab-button { @apply border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200; }
+
+        .card-premium { @apply transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-2xl; }
     </style>
 </head>
 <body class="h-full font-sans antialiased">
@@ -100,13 +111,11 @@
 
         <div id="loading-view" class="vista activa items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
             <div class="text-center">
-                <svg class="animate-spin h-10 w-10 text-indigo-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                   
+                <svg class="animate-spin h-10 w-10 text-teal-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 <p class="mt-4 text-lg font-medium text-gray-700 dark:text-gray-300">Cargando aplicación...</p>
-             
                 <p class="mt-1 text-sm text-gray-500">Conectando con Firebase...</p>
             </div>
         </div>
@@ -118,251 +127,209 @@
                 <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                     <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8">Iniciar Sesión</h2>
                     <form id="login-form" class="space-y-6">
-                        <div id="login-error-message" class="hidden p-3 text-sm font-medium text-red-800 
-                            rounded-lg bg-red-50 dark:bg-red-900 dark:text-red-300" role="alert"></div>
-                        <div><label for="login-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label><input type="email" id="login-email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="tu@correo.com"></div>
-                        <div><label for="login-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contraseña</label><input type="password" id="login-password" name="password" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 
-                            focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="••••••••"></div>
-                        <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">Iniciar Sesión</button>
-                        <div class="text-sm text-center"><a href="#" id="show-reset-password-link" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-200">¿Olvidaste tu contraseña?</a></div>
-                   
+                        <div id="login-error-message" class="hidden p-3 text-sm font-medium text-red-800 rounded-lg bg-red-50 dark:bg-red-900 dark:text-red-300" role="alert"></div>
+                        <div><label for="login-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label><input type="email" id="login-email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="tu@correo.com"></div>
+                        <div><label for="login-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contraseña</label><input type="password" id="login-password" name="password" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="••••••••"></div>
+                        <button type="submit" class="w-full bg-teal-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200">Iniciar Sesión</button>
+                        <div class="text-sm text-center"><a href="#" id="show-reset-password-link" class="font-medium text-teal-600 hover:text-teal-500 transition-colors duration-200">¿Olvidaste tu contraseña?</a></div>
                     </form>
                 </div>
-                <p class="text-center font-medium mt-6 p-2 bg-black/20 rounded-md">¿No tienes cuenta?
-                    <a href="#" id="show-register-link" class="font-bold underline">Regístrate</a></p>
+                <p class="text-center font-medium mt-6 p-2 bg-black/20 rounded-md">¿No tienes cuenta? <a href="#" id="show-register-link" class="font-bold underline">Regístrate</a></p>
             </div>
         </div>
 
         <div id="register-view" class="vista items-center justify-center min-h-screen p-4">
             <div class="w-full max-w-md">
                 <h1 class="text-4xl font-bold text-white text-center mb-8" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.6);">Gestor de Finanzas</h1>
-        
                 <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                     <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8">Crear Cuenta</h2>
                     <form id="register-form" class="space-y-6">
-                        <div id="register-error-message" class="hidden p-3 text-sm font-medium text-red-800 rounded-lg bg-red-50 dark:bg-red-900 dark:text-red-300" 
-                            role="alert"></div>
-                        <div><label for="register-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label><input type="email" id="register-email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="tu@correo.com"></div>
-                        <div><label for="register-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contraseña</label><input type="password" id="register-password" name="password" required minlength="6" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 
-                            dark:border-gray-600 dark:text-gray-100" placeholder="Mínimo 6 caracteres"></div>
-                        <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">Registrarse</button>
+                        <div id="register-error-message" class="hidden p-3 text-sm font-medium text-red-800 rounded-lg bg-red-50 dark:bg-red-900 dark:text-red-300" role="alert"></div>
+                        <div><label for="register-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label><input type="email" id="register-email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="tu@correo.com"></div>
+                        <div><label for="register-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contraseña</label><input type="password" id="register-password" name="password" required minlength="6" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Mínimo 6 caracteres"></div>
+                        <button type="submit" class="w-full bg-teal-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200">Registrarse</button>
                     </form>
                 </div>
-                <p class="text-center font-medium mt-6 
-                    p-2 bg-black/20 rounded-md">¿Ya tienes cuenta? <a href="#" id="show-login-link" class="font-bold underline">Inicia Sesión</a></p>
+                <p class="text-center font-medium mt-6 p-2 bg-black/20 rounded-md">¿Ya tienes cuenta? <a href="#" id="show-login-link" class="font-bold underline">Inicia Sesión</a></p>
             </div>
         </div>
 
         <div id="main-app-view" class="vista bg-gray-100 dark:bg-gray-900">
-            <header class="bg-indigo-800 shadow-md sticky top-0 z-30">
+            <header class="bg-gradient-to-r from-teal-800 to-emerald-500 shadow-lg sticky top-0 z-30">
                 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      
                     <div class="flex justify-between items-center h-16">
                         <h1 class="text-xl font-bold text-white">Gestor de Finanzas</h1>
                         <div class="flex items-center space-x-4">
-                          
+                            
                             <div id="dark-mode-dropdown-container" class="relative">
-                                <button id="dark-mode-trigger" class="text-sm font-medium text-indigo-100 hover:text-white hover:bg-indigo-700 px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white flex items-center space-x-2"><i data-lucide="palette" class="w-5 h-5"></i><span class="hidden sm:inline">Modo</span></button>
-                                <div id="dark-mode-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 
-                                    z-50 hidden dark:bg-gray-700 dark:border dark:border-gray-600" role="menu">
+                                <button id="dark-mode-trigger" class="text-sm font-medium text-teal-100 hover:text-white hover:bg-teal-700 px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white flex items-center space-x-2"><i data-lucide="palette" class="w-5 h-5"></i><span class="hidden sm:inline">Modo</span></button>
+                                <div id="dark-mode-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden dark:bg-gray-700 dark:border dark:border-gray-600" role="menu">
                                     <button id="set-light-mode" role="menuitem" class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"><i data-lucide="sun" class="w-4 h-4 mr-2"></i><span>Modo Claro</span></button>
-                                    <button id="set-dark-mode" role="menuitem" class="flex items-center w-full 
-                                        px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"><i data-lucide="moon" class="w-4 h-4 mr-2"></i><span>Modo Oscuro</span></button>
+                                    <button id="set-dark-mode" role="menuitem" class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"><i data-lucide="moon" class="w-4 h-4 mr-2"></i><span>Modo Oscuro</span></button>
                                     <button id="set-system-mode" role="menuitem" class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"><i data-lucide="monitor" class="w-4 h-4 mr-2"></i><span>Seguir Sistema</span></button>
                                 </div>
-    
                             </div>
-                            <span id="user-email-display" class="text-sm text-indigo-100 hidden sm:block"></span>
-                            <button id="logout-button" class="text-sm font-medium text-indigo-100 hover:text-white hover:bg-indigo-700 px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white">Cerrar 
-                                Sesión</button>
+
+                            <button id="privacy-toggle" class="text-sm font-medium text-teal-100 hover:text-white hover:bg-teal-700 px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white flex items-center space-x-2" title="Ocultar/Mostrar Saldos">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                                <span class="hidden sm:inline ml-2">Privacidad</span>
+                            </button>
+
+                            <span id="user-email-display" class="text-sm text-teal-100 hidden sm:block"></span>
+                            <button id="logout-button" class="text-sm font-medium text-teal-100 hover:text-white hover:bg-teal-700 px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white">Cerrar Sesión</button>
                         </div>
                     </div>
                 </div>
             </header>
 
             <div class="bg-white shadow-md sticky top-16 z-20 dark:bg-gray-800">
-          
                 <div class="max-w-4xl mx-auto border-b border-gray-200 dark:border-gray-700">
                     <nav class="-mb-px flex space-x-8" aria-label="Tabs">
                         <button id="resumen-tab" class="tab-button activa whitespace-nowrap py-4 px-4 border-b-4 font-medium text-lg">Resumen</button>
-                        <button id="transacciones-tab" class="tab-button whitespace-nowrap py-4 px-4 border-b-4 font-medium 
-                            text-lg">Transacciones</button>
+                        <button id="transacciones-tab" class="tab-button whitespace-nowrap py-4 px-4 border-b-4 font-medium text-lg">Transacciones</button>
                         <button id="metas-tab" class="tab-button whitespace-nowrap py-4 px-4 border-b-4 font-medium text-lg">Metas</button>
                         <button id="presupuestos-tab" class="tab-button whitespace-nowrap py-4 px-4 border-b-4 font-medium text-lg">Presupuestos</button>
                     </nav>
-                
                 </div>
             </div >
 
             <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
                 <div id="resumen-content" class="tab-content activa">
                     <section id="summary-section" class="mb-8">
-                        
-      
                         <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
                             <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">Resumen del Mes</h2>
-                            
-              
                             <div class="flex items-center justify-end gap-2 relative">
                                 <div class="relative">
-                 
                                     <button id="month-picker-btn" class="flex items-center text-xl font-semibold text-gray-800 dark:text-gray-100 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <span id="month-display" class="w-28 text-center"></span>
-                           
                                         <i data-lucide="chevron-down" class="w-5 h-5 ml-1 flex-shrink-0"></i>
                                     </button>
-                                    <div id="month-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg z-40 overflow-hidden py-1">
-                                        </div>
+                                    <div id="month-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg z-40 overflow-hidden py-1"></div>
                                 </div>
-                                
-          
                                 <div class="relative">
-                                    <button id="year-picker-btn" class="flex items-center text-xl 
-                                        font-semibold text-gray-800 dark:text-gray-100 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <button id="year-picker-btn" class="flex items-center text-xl font-semibold text-gray-800 dark:text-gray-100 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <span id="year-display" class="w-20 text-center"></span>
                                         <i data-lucide="chevron-down" class="w-5 h-5 ml-1 flex-shrink-0"></i>
-      
                                     </button>
-                                    <div id="year-dropdown" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg z-40 overflow-hidden py-1">
-                                        </div>
+                                    <div id="year-dropdown" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg z-40 overflow-hidden py-1"></div>
                                 </div>
                             </div>
-                            </div>
-
-                      
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-500">Ingresos del Mes</h3><p id="total-month-income" class="text-3xl font-bold text-green-600 mt-2">$ 0,00</p></div>
-                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-500">Gasto Total del Mes</h3><p id="total-month-spending" class="text-3xl font-bold 
-                                text-red-600 mt-2">$ 0,00</p></div>
-                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-500">Balance del Mes</h3><p id="total-month-balance" class="text-3xl font-bold text-indigo-600 mt-2">$ 0,00</p></div>
                         </div>
-                        <div class="grid grid-cols-1 
-                            md:grid-cols-2 gap-4">
-                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-500">Total Gastos Necesarios</h3><p id="total-necessary-spending" class="text-3xl font-bold text-gray-800 dark:text-gray-100 mt-2">$ 0,00</p></div>
-                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><h3 class="text-sm font-medium text-gray-500">Total Gastos Innecesarios</h3><p id="total-unnecessary-spending" class="text-3xl font-bold text-red-600 mt-2">$ 0,00</p></div>
-    
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><h3 class="text-sm font-medium text-gray-500">Ingresos del Mes</h3><p id="total-month-income" class="text-3xl font-bold text-green-600 mt-2 privacy-sensitive">$ 0,00</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><h3 class="text-sm font-medium text-gray-500">Gasto Total del Mes</h3><p id="total-month-spending" class="text-3xl font-bold text-red-600 mt-2 privacy-sensitive">$ 0,00</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><h3 class="text-sm font-medium text-gray-500">Balance del Mes</h3><p id="total-month-balance" class="text-3xl font-bold text-teal-600 mt-2 privacy-sensitive">$ 0,00</p></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><h3 class="text-sm font-medium text-gray-500">Total Gastos Necesarios</h3><p id="total-necessary-spending" class="text-3xl font-bold text-gray-800 dark:text-gray-100 mt-2 privacy-sensitive">$ 0,00</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><h3 class="text-sm font-medium text-gray-500">Total Gastos Innecesarios</h3><p id="total-unnecessary-spending" class="text-3xl font-bold text-red-600 mt-2 privacy-sensitive">$ 0,00</p></div>
                         </div>
                     </section>
-                    <section id="budget-progress-section" class="mt-8 mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Progreso de Presupuestos</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><div id="budget-progress-list" class="space-y-4"><p id="no-budget-message" class="text-center text-gray-500">No has definido presupuestos.
-                        Ve a la pestaña "Presupuestos" para empezar.</p></div></div></section>
-                    <section id="analysis-section" class="mt-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Análisis de Gastos por Categoría</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><div id="chart-container"><canvas id="expense-chart"></canvas></div></div></section>
-                    <section id="history-chart-section" class="mt-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Evolución de los Últimos 6 Meses</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><div id="history-chart-container"><canvas id="history-chart"></canvas></div></div></section>
-           
-                    </div>
+                    <section id="budget-progress-section" class="mt-8 mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Progreso de Presupuestos</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><div id="budget-progress-list" class="space-y-4"><p id="no-budget-message" class="text-center text-gray-500">No has definido presupuestos. Ve a la pestaña "Presupuestos" para empezar.</p></div></div></section>
+                    <section id="analysis-section" class="mt-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Análisis de Gastos por Categoría</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><div id="chart-container"><canvas id="expense-chart"></canvas></div></div></section>
+                    <section id="history-chart-section" class="mt-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Evolución de los Últimos 6 Meses</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><div id="history-chart-container"><canvas id="history-chart"></canvas></div></div></section>
+                </div>
 
                 <div id="transacciones-content" class="tab-content">
                     <section id="add-buttons-section" class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button id="show-add-income-modal-button" class="w-full bg-green-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200 flex items-center justify-center space-x-2"><svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 
-                            24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Registrar Nuevo Ingreso</span></button>
-                        <button id="show-add-expense-modal-button" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 flex items-center justify-center space-x-2"><svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Registrar Nuevo Gasto</span></button>
-                   
+                        <button id="show-add-income-modal-button" class="w-full bg-green-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200 flex items-center justify-center space-x-2"><svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Registrar Nuevo Ingreso</span></button>
+                        <button id="show-add-expense-modal-button" class="w-full bg-teal-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200 flex items-center justify-center space-x-2"><svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Registrar Nuevo Gasto</span></button>
                     </section>
                     <div class="mb-8"><button id="export-csv-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-md shadow-lg flex items-center justify-center transition-colors duration-200 border border-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Descargar Reporte Mensual (.csv)</button></div>
-       
                     
                     <section id="filter-section" class="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700">
                         <div class="flex flex-col md:flex-row gap-4">
                             <div class="flex-1 relative">
                                 <label for="search-term" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Buscar por descripción</label>
-                            
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none pt-6">
                                     <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
                                 </div>
-                
-                                <input type="search" id="search-term" class="mt-1 w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Café, Supermercado...">
+                                <input type="search" id="search-term" class="mt-1 w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Café, Supermercado...">
                             </div>
                             <div class="flex-1">
                                 <label for="filter-category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Filtrar por categoría (Gastos)</label>
-                                <select id="filter-category" 
-                                    class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
+                                <select id="filter-category" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
                                     <option value="all">Todas las categorías</option>
                                     <option value="Alimentación">Alimentación</option>
-           
                                     <option value="Transporte">Transporte</option>
                                     <option value="Vivienda">Vivienda</option>
-                                    <option 
-                                        value="Estudios">Estudios</option>
+                                    <option value="Estudios">Estudios</option>
                                     <option value="Ocio">Ocio</option>
                                     <option value="Otros">Otros</option>
-                          
                                 </select>
                             </div>
                         </div>
                     </section>
 
-                    <section id="income-history-section" 
-                        class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Historial de Ingresos</h2><div class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700"><ul id="income-list" class="divide-y divide-gray-200 dark:divide-gray-700"><li id="no-income-message" class="p-6 text-center text-gray-500">No has registrado ningún ingreso este mes.</li></ul></div></section>
-                    <section id="expenses-history-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Historial de Gastos</h2><div class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700"><ul id="expenses-list" class="divide-y divide-gray-200 dark:divide-gray-700"><li id="no-expenses-message" class="p-6 text-center text-gray-500">No has registrado ningún gasto este mes.</li></ul></div></section>
+                    <section id="income-history-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Historial de Ingresos</h2><div class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700"><ul id="income-list" class="divide-y divide-gray-200 dark:divide-gray-700"></ul></div></section>
+                    <section id="expenses-history-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Historial de Gastos</h2><div class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700"><ul id="expenses-list" class="divide-y divide-gray-200 dark:divide-gray-700"></ul></div></section>
                 </div>
 
-    
                 <div id="metas-content" class="tab-content">
-                    <section id="goals-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Metas de Ahorro</h2><div id="goals-list" class="space-y-4 mb-4"><li id="no-goals-message" class="p-6 text-center text-gray-500 bg-white rounded-lg shadow border border-gray-200 dark:bg-gray-800 dark:border-gray-700">No has añadido ninguna meta de ahorro.</li></div><button id="show-add-goal-modal-button" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 flex items-center justify-center space-x-2"><svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line 
-                        x1="5" y1="12" x2="19" y2="12"></line></svg><span>Añadir nueva meta</span></button></section>
+                    <section id="goals-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Metas de Ahorro</h2><div id="goals-list" class="space-y-4 mb-4"></div><button id="show-add-goal-modal-button" class="w-full bg-teal-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200 flex items-center justify-center space-x-2"><svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Añadir nueva meta</span></button></section>
                 </div>
                 
                 <div id="presupuestos-content" class="tab-content">
-                    <section id="budget-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Definir Presupuestos Mensuales</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"><div class="mb-6 space-y-4"><label for="budget-income-target" class="block text-sm font-medium text-gray-700 
-                        dark:text-gray-300">Ingreso Mensual Objetivo ($)</label><input type="text" id="budget-income-target" inputmode="numeric" required class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 text-lg font-bold" placeholder="Ej: 500.000"><p id="remaining-budget-summary" class="text-sm font-semibold text-gray-600 dark:text-gray-400">Total de Presupuestos Asignados: $0 / Ingreso Objetivo: $0.00</p></div><p class="text-gray-600 dark:text-gray-300 mb-6">Establece un límite de gasto mensual para cada categoría.</p><form id="budget-form" class="space-y-4"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Alimentación ($)</label><input type="text" id="budget-Alimentación" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Transporte ($)</label><input type="text" id="budget-Transporte" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 
-                        dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Vivienda ($)</label><input type="text" id="budget-Vivienda" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Estudios ($)</label><input type="text" id="budget-Estudios" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ocio ($)</label><input type="text" id="budget-Ocio" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Otros ($)</label><input type="text" id="budget-Otros" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div></div><button type="submit" 
-                        class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200">Guardar Presupuestos</button></form></div></section>
+                    <section id="budget-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Definir Presupuestos Mensuales</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><div class="mb-6 space-y-4"><label for="budget-income-target" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ingreso Mensual Objetivo ($)</label><input type="text" id="budget-income-target" inputmode="numeric" required class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 text-lg font-bold" placeholder="Ej: 500.000"><p id="remaining-budget-summary" class="text-sm font-semibold text-gray-600 dark:text-gray-400">Total de Presupuestos Asignados: $0 / Ingreso Objetivo: $0.00</p></div><p class="text-gray-600 dark:text-gray-300 mb-6">Establece un límite de gasto mensual para cada categoría.</p><form id="budget-form" class="space-y-4"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Alimentación ($)</label><input type="text" id="budget-Alimentación" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Transporte ($)</label><input type="text" id="budget-Transporte" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Vivienda ($)</label><input type="text" id="budget-Vivienda" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Estudios ($)</label><input type="text" id="budget-Estudios" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ocio ($)</label><input type="text" id="budget-Ocio" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Otros ($)</label><input type="text" id="budget-Otros" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div></div><button type="submit" class="w-full bg-teal-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200">Guardar Presupuestos</button></form></div></section>
                 </div>
             </main>
         </div>
         
         <button id="ai-bubble-button" title="Asistente de IA"
-            class="fixed bottom-6 left-6 bg-indigo-600 
-            text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700 transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 z-30">
+            class="fixed bottom-6 left-6 bg-teal-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-700 transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 z-30">
             <img src="https://cdn-icons-png.flaticon.com/512/1698/1698535.png" alt="AI Robot Logo" class="w-10 h-10 object-contain">
         </button>
 
+        <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end space-y-3">
+            <div id="fab-menu" class="flex flex-col items-end space-y-3 hidden transition-all duration-300 origin-bottom transform scale-90">
+                <button onclick="document.getElementById('show-add-income-modal-button').click()" class="flex items-center bg-green-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-green-700 transition-colors">
+                    <span class="mr-2 text-sm font-bold">Ingreso</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+                <button onclick="document.getElementById('show-add-expense-modal-button').click()" class="flex items-center bg-red-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-red-700 transition-colors">
+                    <span class="mr-2 text-sm font-bold">Gasto</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+            </div>
+            
+            <button id="fab-trigger" class="bg-gradient-to-r from-teal-600 to-emerald-500 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-teal-300">
+                <svg id="fab-icon-plus" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <svg id="fab-icon-close" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 absolute opacity-0 transition-transform duration-300 rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
         <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
-        <div id="expense-form-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 id="expense-form-title" class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">Registrar Nuevo Gasto</h3><form id="add-expense-form" class="space-y-4"><input type="hidden" id="expense-form-id"><div><label for="expense-description" class="block 
-            text-sm font-medium text-gray-700 dark:text-gray-300">Descripción del Gasto</label><input type="text" id="expense-description" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Materiales de estudio"></div><div><label for="expense-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto ($)</label><input type="text" id="expense-amount" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label for="expense-category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label><select id="expense-category" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"><option value="" disabled selected>Selecciona una categoría</option><option value="Alimentación">Alimentación</option><option value="Transporte">Transporte</option><option value="Vivienda">Vivienda</option><option value="Estudios">Estudios</option><option value="Ocio">Ocio</option><option value="Otros">Otros</option></select></div><div class="flex items-center mb-4"><input id="expense-necessary" type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"><label for="expense-necessary" class="ml-2 block 
-            text-sm text-gray-800 dark:text-gray-300">¿Es un gasto necesario?</label></div><div><label for="expense-recurrence" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Periodicidad</label><select id="expense-recurrence" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"><option value="none">Una sola vez</option><option value="monthly">Mensual</option><option value="yearly">Anual</option></select></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-expense-form" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" id="expense-form-button" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Guardar Gasto</button></div></form></div></div>
-        <div id="income-form-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 id="income-form-title" class="text-xl font-bold text-gray-800 
-            dark:text-gray-100 mb-6">Registrar Nuevo Ingreso</h3><form id="add-income-form" class="space-y-4"><input type="hidden" id="income-form-id"><div><label for="income-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción del Ingreso</label><input type="text" id="income-description" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Beca, Ayuda familiar"></div><div><label for="income-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto ($)</label><input type="text" id="income-amount" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-income-form" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" id="income-form-button" class="w-full bg-green-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Guardar 
-            Ingreso</button></div></form></div></div>
-        <div id="add-goal-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 id="goal-form-title" class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">Nueva Meta de Ahorro</h3><form id="add-goal-form" class="space-y-4"><input type="hidden" id="goal-form-id"><div><label for="goal-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre de la Meta</label><input type="text" id="goal-name" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Viaje de Graduación"></div><div><label for="goal-target" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto Objetivo ($)</label><input type="text" id="goal-target" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="2.000.000"></div><div><label for="goal-current" class="block text-sm font-medium 
-            text-gray-700 dark:text-gray-300">Ahorrado Actualmente ($)</label><input type="text" id="goal-current" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="500.000"></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-add-goal" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" id="goal-form-button" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Crear Meta</button></div></form></div></div>
-        <div id="add-to-goal-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Abonar a Meta</h3><p id="add-to-goal-name" class="text-gray-600 dark:text-gray-300 mb-6">Abonando a: Viaje de 
-            Graduación</p><form id="add-to-goal-form" class="space-y-4"><div><label for="add-to-goal-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto a Abonar ($)</label><input type="text" id="add-to-goal-amount" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-add-to-goal" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Abonar</button></div></form></div></div>
+        <div id="expense-form-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 id="expense-form-title" class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">Registrar Nuevo Gasto</h3><form id="add-expense-form" class="space-y-4"><input type="hidden" id="expense-form-id"><div><label for="expense-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción del Gasto</label><input type="text" id="expense-description" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Materiales de estudio"></div><div><label for="expense-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto ($)</label><input type="text" id="expense-amount" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label for="expense-category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label><select id="expense-category" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"><option value="" disabled selected>Selecciona una categoría</option><option value="Alimentación">Alimentación</option><option value="Transporte">Transporte</option><option value="Vivienda">Vivienda</option><option value="Estudios">Estudios</option><option value="Ocio">Ocio</option><option value="Otros">Otros</option></select></div><div class="flex items-center mb-4"><input id="expense-necessary" type="checkbox" class="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"><label for="expense-necessary" class="ml-2 block text-sm text-gray-800 dark:text-gray-300">¿Es un gasto necesario?</label></div><div><label for="expense-recurrence" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Periodicidad</label><select id="expense-recurrence" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"><option value="none">Una sola vez</option><option value="monthly">Mensual</option><option value="yearly">Anual</option></select></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-expense-form" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" id="expense-form-button" class="w-full bg-teal-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">Guardar Gasto</button></div></form></div></div>
+        <div id="income-form-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 id="income-form-title" class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">Registrar Nuevo Ingreso</h3><form id="add-income-form" class="space-y-4"><input type="hidden" id="income-form-id"><div><label for="income-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción del Ingreso</label><input type="text" id="income-description" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Beca, Ayuda familiar"></div><div><label for="income-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto ($)</label><input type="text" id="income-amount" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-income-form" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" id="income-form-button" class="w-full bg-green-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Guardar Ingreso</button></div></form></div></div>
+        <div id="add-goal-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 id="goal-form-title" class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">Nueva Meta de Ahorro</h3><form id="add-goal-form" class="space-y-4"><input type="hidden" id="goal-form-id"><div><label for="goal-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre de la Meta</label><input type="text" id="goal-name" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Viaje de Graduación"></div><div><label for="goal-target" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto Objetivo ($)</label><input type="text" id="goal-target" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="2.000.000"></div><div><label for="goal-current" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ahorrado Actualmente ($)</label><input type="text" id="goal-current" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="500.000"></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-add-goal" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" id="goal-form-button" class="w-full bg-teal-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">Crear Meta</button></div></form></div></div>
+        <div id="add-to-goal-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Abonar a Meta</h3><p id="add-to-goal-name" class="text-gray-600 dark:text-gray-300 mb-6">Abonando a: Viaje de Graduación</p><form id="add-to-goal-form" class="space-y-4"><div><label for="add-to-goal-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto a Abonar ($)</label><input type="text" id="add-to-goal-amount" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-add-to-goal" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" class="w-full bg-teal-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">Abonar</button></div></form></div></div>
         
         <div id="ai-assistant-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4">
-        
             <div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800">
-                <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-indigo-700 flex items-center"><i data-lucide="sparkles" class="w-5 h-5 mr-2"></i>Asistente de IA</h3><button id="close-ai-modal" class="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none pt-0 pb-1 px-2">&times;</button></div>
-                <div id="ai-chat-window" class="h-64 w-full bg-gray-50 rounded-md border border-gray-200 p-4 overflow-y-auto mb-4 flex flex-col space-y-3 dark:bg-gray-900 dark:border-gray-700"><div class="chat-message bot-message"><p class="text-sm">¡Hola!
-            Soy tu asistente de finanzas. ¿En qué puedo ayudarte hoy?
-            Puedes seleccionar una de las preguntas frecuentes o escribir tu propia consulta.</p></div></div>
+                <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold text-teal-700 flex items-center"><i data-lucide="sparkles" class="w-5 h-5 mr-2"></i>Asistente de IA</h3><button id="close-ai-modal" class="text-gray-400 hover:text-gray-600 text-3xl font-light leading-none pt-0 pb-1 px-2">&times;</button></div>
+                <div id="ai-chat-window" class="h-64 w-full bg-gray-50 rounded-md border border-gray-200 p-4 overflow-y-auto mb-4 flex flex-col space-y-3 dark:bg-gray-900 dark:border-gray-700"><div class="chat-message bot-message"><p class="text-sm">¡Hola! Soy tu asistente de finanzas. ¿En qué puedo ayudarte hoy? Puedes seleccionar una de las preguntas frecuentes o escribir tu propia consulta.</p></div></div>
                 <div id="ai-suggested-questions" class="space-y-2">
-                    <button class="w-full text-left p-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-600" data-question-key="faq-necesario" data-question-text="¿Qué es un 'gasto necesario'?">¿Qué es un "gasto necesario"?</button>
-                    <button class="w-full text-left p-3 
-                        border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-600" data-question-key="faq-ahorrar" data-question-text="¿Cuál es el mejor consejo para ahorrar?">¿Cuál es el mejor consejo para ahorrar?</button>
-                    <button class="w-full text-left p-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-600" data-question-key="faq-metas" data-question-text="¿Por qué son importantes las metas?">¿Por qué son importantes las metas?</button>
+                    <button class="w-full text-left p-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-600" data-question-key="faq-necesario" data-question-text="¿Qué es un 'gasto necesario'?">¿Qué es un "gasto necesario"?</button>
+                    <button class="w-full text-left p-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-600" data-question-key="faq-ahorrar" data-question-text="¿Cuál es el mejor consejo para ahorrar?">¿Cuál es el mejor consejo para ahorrar?</button>
+                    <button class="w-full text-left p-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-600" data-question-key="faq-metas" data-question-text="¿Por qué son importantes las metas?">¿Por qué son importantes las metas?</button>
                 </div>
-        
                 <form id="ai-chat-input-form" class="flex mt-4 space-x-3">
-                    <input type="text" id="user-chat-input" placeholder="Escribe tu consulta aquí..." class="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
-                    <button type="submit" id="send-ai-message" class="bg-indigo-600 text-white p-2 rounded-md font-semibold shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 flex items-center justify-center">
-              
+                    <input type="text" id="user-chat-input" placeholder="Escribe tu consulta aquí..." class="flex-grow px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100">
+                    <button type="submit" id="send-ai-message" class="bg-teal-600 text-white p-2 rounded-md font-semibold shadow-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m22 2-7 20-4-9-9-4Z"/>
-                 
                             <path d="M22 2 11 13"/>
                         </svg>
                     </button>
                 </form>
-                <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600"><p class="text-sm text-gray-700 dark:text-gray-300 
-                    mb-2">¿Necesitas asistencia directa o una consulta más específica?</p><a href="mailto:soporte@finanzasapp.com" class="flex items-center justify-center space-x-2 bg-indigo-50 text-indigo-700 py-2 px-4 rounded-md font-semibold border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200"><i data-lucide="mail" class="w-5 h-5"></i><span>Contacta con Soporte</span></a></div>
+                <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600"><p class="text-sm text-gray-700 dark:text-gray-300 mb-2">¿Necesitas asistencia directa o una consulta más específica?</p><a href="mailto:soporte@finanzasapp.com" class="flex items-center justify-center space-x-2 bg-teal-50 text-teal-700 py-2 px-4 rounded-md font-semibold border border-teal-200 hover:bg-teal-100 transition-colors duration-200"><i data-lucide="mail" class="w-5 h-5"></i><span>Contacta con Soporte</span></a></div>
             </div>
         </div>
 
-        <div id="confirm-delete-modal" class="modal fixed inset-0 bg-black bg-opacity-75 z-50 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Confirmar Eliminación</h3><p id="confirm-message" class="text-gray-700 dark:text-gray-300 mb-6">¿Estás seguro?</p><div class="flex gap-4 pt-4"><button type="button" id="cancel-delete-btn" class="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-300 
-            focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="button" id="confirm-delete-btn" class="w-full bg-red-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">Eliminar</button></div></div></div>
-        <div id="reset-password-modal" class="modal fixed inset-0 bg-black bg-opacity-75 z-50 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">Restablecer Contraseña</h3><form id="reset-password-form" class="space-y-4"><div><label for="reset-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Correo Electrónico</label><input type="email" id="reset-email" name="email" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="tu@correo.com"></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-reset-password" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 
-            dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Enviar Enlace</button></div></form></div></div>
+        <div id="confirm-delete-modal" class="modal fixed inset-0 bg-black bg-opacity-75 z-50 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Confirmar Eliminación</h3><p id="confirm-message" class="text-gray-700 dark:text-gray-300 mb-6">¿Estás seguro?</p><div class="flex gap-4 pt-4"><button type="button" id="cancel-delete-btn" class="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="button" id="confirm-delete-btn" class="w-full bg-red-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">Eliminar</button></div></div></div>
+        <div id="reset-password-modal" class="modal fixed inset-0 bg-black bg-opacity-75 z-50 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">Restablecer Contraseña</h3><form id="reset-password-form" class="space-y-4"><div><label for="reset-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Correo Electrónico</label><input type="email" id="reset-email" name="email" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="tu@correo.com"></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-reset-password" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" class="w-full bg-teal-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">Enviar Enlace</button></div></form></div></div>
 
     </div> 
 
@@ -371,7 +338,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, deleteDoc, writeBatch, runTransaction, Timestamp, orderBy, updateDoc, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        
         // CONFIGURACIÓN DE FIREBASE (CLAVES INTEGRADAS)
         const firebaseConfig = {
             apiKey: "AIzaSyB2t6IQKCUEwFiRXM7QzQHbOyR1RzAXSHU",
@@ -380,10 +346,8 @@
             storageBucket: "app-de-finanzas-estudiantil.firebasestorage.app",
             messagingSenderId: "161010697405",
             appId: "1:161010697405:web:90e8b839b1f91a1f81e3d4",
-      
             measurementId: "G-WWEE415H5Q"
         };
-        
         let app;
         let auth;
         let db;
@@ -415,7 +379,6 @@
         let addToGoalModal = {};
         let aiAssistantModal = {};
         let confirmDeleteModal = {};
-        
         // --- 4. FUNCIONES DE UTILIDAD (Handlers movidos aquí para evitar ReferenceError) ---
         
         async function handleExpenseFormSubmit(e) {
@@ -456,9 +419,9 @@
             const id = addGoalModal.formId.value, name = addGoalModal.name.value;
             const data = { name: name, targetAmount: parseFloat(cleanNumberString(addGoalModal.target.value)), currentAmount: parseFloat(cleanNumberString(addGoalModal.current.value)) };
             if (!data.name || isNaN(data.targetAmount) || data.targetAmount <= 0 || isNaN(data.currentAmount) || data.currentAmount < 0) { showError('Datos Inválidos', 'Revisa los montos.');
-                return; }
+            return; }
             if (data.currentAmount > data.targetAmount) { showError('Datos Inválidos', 'Ahorrado no puede ser mayor al objetivo.');
-                return; }
+            return; }
             try {
                 if (id) await updateDoc(doc(db, "users", currentUserId, "goals", id), {...data, updatedAt: Timestamp.now()});
                 else await addDoc(collection(db, "users", currentUserId, "goals"), {...data, createdAt: Timestamp.now()});
@@ -467,23 +430,44 @@
             }
         }
         
+        // MANEJO DE ABONO A META CON CONFETI 🎉
         async function handleAddToGoal(e) {
             e.preventDefault();
             const id = addToGoalModal.currentGoalId, amt = parseFloat(cleanNumberString(addToGoalModal.amount.value));
             if (!id || isNaN(amt) || amt <= 0) { showError('Monto Inválido', 'Ingresa un monto válido.');
-                return; }
+            return; }
             const ref = doc(db, "users", currentUserId, "goals", id);
+            
+            let goalReached = false;
+
             try {
                 await runTransaction(db, async (t) => {
                     const goalDoc = await t.get(ref);
                     if (!goalDoc.exists()) throw new Error("Meta no existe");
                     const data = goalDoc.data();
-     
                     let newAmount = data.currentAmount + amt;
-                    if (newAmount > data.targetAmount) newAmount = data.targetAmount;
+                    
+                    if (newAmount >= data.targetAmount) {
+                        newAmount = data.targetAmount;
+                        goalReached = true; 
+                    }
+                    
                     t.update(ref, { currentAmount: newAmount });
                 });
-                toggleAddToGoalModal(false); showSuccess("¡Abono Exitoso!", `Se añadió ${formatCurrency(amt)}.`);
+                
+                toggleAddToGoalModal(false); 
+                showSuccess("¡Abono Exitoso!", `Se añadió ${formatCurrency(amt)}.`);
+                
+                // SI SE ALCANZÓ LA META: ¡LANZAR CONFETI! 🎉
+                if (goalReached) {
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                    showSuccess("¡FELICIDADES!", "¡Has completado tu meta de ahorro!");
+                }
+
             } catch (e) { showError('Error', e.message);
             }
         }
@@ -533,42 +517,36 @@
                 darkModeToggle: document.getElementById('dark-mode-trigger'), 
                 darkModeMenu: document.getElementById('dark-mode-menu'), 
                 darkModeDropdownContainer: document.getElementById('dark-mode-dropdown-container'),
-           
                 setLightModeBtn: document.getElementById('set-light-mode'),
                 setDarkModeBtn: document.getElementById('set-dark-mode'),
                 setSystemModeBtn: document.getElementById('set-system-mode'),
                 totalMonthIncome: document.getElementById('total-month-income'),
                 totalMonthSpending: document.getElementById('total-month-spending'),
                 totalMonthBalance: document.getElementById('total-month-balance'),
-         
                 totalNecessarySpending: document.getElementById('total-necessary-spending'),
                 totalUnnecessarySpending: document.getElementById('total-unnecessary-spending'),
                 showAddExpenseModalButton: document.getElementById('show-add-expense-modal-button'),
                 expenseFormModal: document.getElementById('expense-form-modal'),
                 expenseFormTitle: document.getElementById('expense-form-title'),
                 addExpenseForm: document.getElementById('add-expense-form'),
-       
                 expenseFormButton: document.getElementById('expense-form-button'),
                 cancelExpenseFormButton: document.getElementById('cancel-expense-form'),
                 expenseFormId: document.getElementById('expense-form-id'),
                 expenseDescription: document.getElementById('expense-description'),
                 expenseAmount: document.getElementById('expense-amount'),
                 expenseCategory: document.getElementById('expense-category'),
-     
                 expenseNecessary: document.getElementById('expense-necessary'),
                 expenseRecurrence: document.getElementById('expense-recurrence'),
                 expensesList: document.getElementById('expenses-list'),
                 noExpensesMessage: document.getElementById('no-expenses-message'),
                 showAddIncomeModalButton: document.getElementById('show-add-income-modal-button'),
                 incomeFormModal: document.getElementById('income-form-modal'),
-   
                 incomeFormTitle: document.getElementById('income-form-title'),
                 addIncomeForm: document.getElementById('add-income-form'),
                 incomeFormButton: document.getElementById('income-form-button'),
                 cancelIncomeFormButton: document.getElementById('cancel-income-form'),
                 incomeFormId: document.getElementById('income-form-id'),
                 incomeDescription: document.getElementById('income-description'),
- 
                 incomeAmount: document.getElementById('income-amount'),
                 incomeList: document.getElementById('income-list'),
                 noIncomeMessage: document.getElementById('no-income-message'),
@@ -581,28 +559,24 @@
                 tabButtons: document.querySelectorAll('.tab-button'),
                 tabContents: document.querySelectorAll('.tab-content'),
                 
-               
                 // MEJORA 4: IDs de fecha
                 monthPickerBtn: document.getElementById('month-picker-btn'),
                 monthDropdown: document.getElementById('month-dropdown'),
                 monthDisplay: document.getElementById('month-display'),
                 yearPickerBtn: document.getElementById('year-picker-btn'),
                 yearDropdown: document.getElementById('year-dropdown'),
-         
                 yearDisplay: document.getElementById('year-display'),
                 
                 budgetForm: document.getElementById('budget-form'),
                 budgetProgressList: document.getElementById('budget-progress-list'),
                 noBudgetMessage: document.getElementById('no-budget-message'),
                 budgetIncomeTarget: document.getElementById('budget-income-target'),
-        
                 remainingBudgetSummary: document.getElementById('remaining-budget-summary'),
                 aiChatInputForm: document.getElementById('ai-chat-input-form'),
                 userChatInput: document.getElementById('user-chat-input'),
                 sendAiMessageBtn: document.getElementById('send-ai-message'),
                 aiBubbleButton: document.getElementById('ai-bubble-button'),
                 exportCsvBtn: document.getElementById('export-csv-btn'),
-      
                 searchTerm: document.getElementById('search-term'),
                 filterCategory: document.getElementById('filter-category'),
             };
@@ -627,7 +601,6 @@
                 name: document.getElementById('goal-name'),
                 target: document.getElementById('goal-target'),
                 current: document.getElementById('goal-current'),
-             
                 cancelButton: document.getElementById('cancel-add-goal'),
                 title: document.getElementById('goal-form-title'),
                 button: document.getElementById('goal-form-button'),
@@ -639,7 +612,6 @@
                 nameDisplay: document.getElementById('add-to-goal-name'),
                 amount: document.getElementById('add-to-goal-amount'),
                 cancelButton: document.getElementById('cancel-add-to-goal'),
-             
                 currentGoalId: null,
             };
             aiAssistantModal = {
@@ -664,8 +636,7 @@
         }
         
         function getChartTextColor() {
-            return document.documentElement.classList.contains('dark') ?
-            '#D1D5DB' : '#4B5563';
+            return document.documentElement.classList.contains('dark') ? '#D1D5DB' : '#4B5563';
         }
         
         // --- FUNCIONES DE TEMA ---
@@ -680,7 +651,6 @@
                 localStorage.setItem('theme', theme);
             }
             if (finalTheme === 'dark') html.classList.add('dark'); else html.classList.remove('dark');
-            
             // Re-renderizar íconos y gráficos después del cambio de tema
             if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
             if (currentUserId) {
@@ -751,10 +721,9 @@
             return colors[category] || 'bg-gray-100 text-gray-800';
         }
         
-        function toggleExpenseModal(show) { if(appElements.expenseFormModal) show ?
-            appElements.expenseFormModal.classList.add('activa') : appElements.expenseFormModal.classList.remove('activa'); }
+        function toggleExpenseModal(show) { if(appElements.expenseFormModal) show ? appElements.expenseFormModal.classList.add('activa') : appElements.expenseFormModal.classList.remove('activa'); }
         function openAddExpenseModal() { appElements.addExpenseForm.reset(); appElements.expenseFormTitle.textContent = 'Registrar Nuevo Gasto';
-            appElements.expenseFormButton.textContent = 'Guardar Gasto'; appElements.expenseFormId.value = ''; appElements.expenseRecurrence.value = 'none'; toggleExpenseModal(true);
+        appElements.expenseFormButton.textContent = 'Guardar Gasto'; appElements.expenseFormId.value = ''; appElements.expenseRecurrence.value = 'none'; toggleExpenseModal(true);
         }
         function openEditExpenseModal(editButton) {
             const data = editButton.dataset;
@@ -772,7 +741,7 @@
         function toggleIncomeModal(show) { if(appElements.incomeFormModal) show ? appElements.incomeFormModal.classList.add('activa') : appElements.incomeFormModal.classList.remove('activa');
         }
         function openAddIncomeModal() { appElements.addIncomeForm.reset(); appElements.incomeFormTitle.textContent = 'Registrar Nuevo Ingreso';
-            appElements.incomeFormButton.textContent = 'Guardar Ingreso'; appElements.incomeFormId.value = ''; toggleIncomeModal(true); }
+        appElements.incomeFormButton.textContent = 'Guardar Ingreso'; appElements.incomeFormId.value = ''; toggleIncomeModal(true); }
         function openEditIncomeModal(editButton) {
             const data = editButton.dataset;
             appElements.incomeDescription.value = data.description;
@@ -786,7 +755,7 @@
         function toggleAddGoalModal(show) { if(addGoalModal.modal) show ? addGoalModal.modal.classList.add('activa') : addGoalModal.modal.classList.remove('activa');
         }
         function openAddGoalModal() { addGoalModal.form.reset(); addGoalModal.title.textContent = 'Nueva Meta de Ahorro';
-            addGoalModal.button.textContent = 'Crear Meta'; addGoalModal.formId.value = ''; toggleAddGoalModal(true); }
+        addGoalModal.button.textContent = 'Crear Meta'; addGoalModal.formId.value = ''; toggleAddGoalModal(true); }
         function openEditGoalModal(editButton) {
             const data = editButton.dataset;
             addGoalModal.name.value = data.name;
@@ -905,9 +874,7 @@
         function resetAiChat() {
             if(aiAssistantModal.chatWindow) aiAssistantModal.chatWindow.innerHTML = `
                 <div class="chat-message bot-message">
-                    <p class="text-sm">¡Hola!
-                        Soy tu asistente de finanzas. ¿En qué puedo ayudarte hoy?
-                        Puedes seleccionar una de las preguntas frecuentes o escribir tu propia consulta.</p>
+                    <p class="text-sm">¡Hola! Soy tu asistente de finanzas. ¿En qué puedo ayudarte hoy? Puedes seleccionar una de las preguntas frecuentes o escribir tu propia consulta.</p>
                 </div>
             `;
         }
@@ -945,18 +912,18 @@
             hideAuthErrors();
             try { showView('loading'); await createUserWithEmailAndPassword(auth, authForms.register['register-email'].value, authForms.register['register-password'].value); } 
             catch (error) { showView('register');
-                showError('Error Registro', error.message); }
+            showError('Error Registro', error.message); }
         }
         async function handleLogin(e) {
             e.preventDefault();
             hideAuthErrors();
             try { showView('loading'); await signInWithEmailAndPassword(auth, authForms.login['login-email'].value, authForms.login['login-password'].value); } 
             catch (error) { showView('login');
-                showError('Error Login', error.message); }
+            showError('Error Login', error.message); }
         }
         async function handleLogout() { try { await signOut(auth);
-            } catch (error) { showError('Error', 'No se pudo cerrar la sesión.');
-            } }
+        } catch (error) { showError('Error', 'No se pudo cerrar la sesión.');
+        } }
         async function handlePasswordReset(e) {
             e.preventDefault();
             try { await sendPasswordResetEmail(auth, resetPasswordModal.email.value); toggleResetPasswordModal(false); showSuccess('Enlace enviado', 'Revisa tu correo.');
@@ -970,26 +937,27 @@
                 expensesUnsubscribe(); goalsUnsubscribe(); incomeUnsubscribe(); budgetUnsubscribe();
                 if (expenseChartInstance) { expenseChartInstance.destroy(); expenseChartInstance = null; }
                 if (historyChartInstance) { historyChartInstance.destroy(); historyChartInstance = null; }
-  
                 currentExpenses = []; currentIncomes = []; currentBudgets = {};
                 
                 if (user) {
                     currentUserId = user.uid;
-                    if (!db) 
-                        db = getFirestore(app);
+                    if (!db) db = getFirestore(app);
                     if(appElements.userEmailDisplay) appElements.userEmailDisplay.textContent = user.email;
                     currentDate = new Date(); 
-                    
-                    updateDateDisplay(); // MEJORA 4
+                    updateDateDisplay(); 
 
-        
                     checkAndCreateRecurrences(currentUserId);
-                    loadDataForCurrentMonth(); 
+                    loadDataForCurrentMonth();
                     setupGoalsListener(currentUserId);
                     setupBudgetListener(currentUserId);
                     fetchMonthlyHistory(currentUserId).then(renderHistoryChart);
                     showView('mainApp');
                     if (appElements.aiBubbleButton) appElements.aiBubbleButton.classList.remove('hidden');
+
+                    // --- INICIALIZAR MODO PRIVACIDAD ---
+                    const privacyState = localStorage.getItem('privacyMode') === 'true';
+                    if(privacyState) togglePrivacyMode(true);
+
                 } else {
                     currentUserId = null;
                     showView('login');
@@ -1015,7 +983,7 @@
             const ref = doc(db, "users", userId, "settings", "recurrenceControl");
             let lastCheckedDate = null;
             try { const d = await getDoc(ref);
-                if (d.exists()) lastCheckedDate = d.data().lastChecked.toDate(); } catch (e) {}
+            if (d.exists()) lastCheckedDate = d.data().lastChecked.toDate(); } catch (e) {}
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (lastCheckedDate && lastCheckedDate.getTime() >= today.getTime()) return;
@@ -1032,12 +1000,10 @@
                     else break;
                     if (next <= today && next.getMonth() === today.getMonth() && next.getFullYear() === today.getFullYear()) {
                         const newData = { ...data, recurrence: 'none', createdAt: Timestamp.now(), originalRecurrenceId: d.id };
-          
                         batch.set(doc(collection(db, "users", userId, "expenses")), newData);
                         count++;
                         batch.update(d.ref, { createdAt: Timestamp.fromDate(next) });
                     } else if (next > today) break;
-    
                 }
             });
             if (count > 0) await batch.commit();
@@ -1045,7 +1011,7 @@
             if (count > 0) showToast(`${count} gastos recurrentes creados.`);
         }
 
-        // --- MEJORA 4: Funciones de selector de fecha ---
+        // --- Funciones de selector de fecha ---
         function updateDateDisplay() {
             if(appElements.monthDisplay) appElements.monthDisplay.textContent = monthNames[currentDate.getMonth()];
             if(appElements.yearDisplay) appElements.yearDisplay.textContent = currentDate.getFullYear();
@@ -1091,7 +1057,6 @@
                 const isSelected = index === currentDate.getMonth();
                 appElements.monthDropdown.innerHTML += `
                     <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 ${isSelected ? 'bg-indigo-100 dark:bg-indigo-700 font-bold' : ''}" data-month="${index}">
-                    
                         ${name}
                     </button>`;
             });
@@ -1101,7 +1066,6 @@
             appElements.yearDropdown.innerHTML = '';
             const currentYear = new Date().getFullYear();
             const startYear = currentYear - 5;
-            // 5 años atrás
             for (let i = 0; i < 10; i++) { // 10 años en total
                 const year = startYear + i;
                 const isSelected = year === currentDate.getFullYear();
@@ -1136,7 +1100,38 @@
                 appElements.yearDropdown.classList.add('hidden');
             }
         }
-        // --- FIN MEJORA 4 ---
+        // --- FIN MEJORAS FECHA ---
+
+        // --- NUEVA FUNCIÓN: TOGGLE PRIVACY (CORREGIDA) ---
+        function togglePrivacyMode(forceState = null) {
+            const body = document.body;
+            const btn = document.getElementById('privacy-toggle');
+            
+            let isActive = body.classList.contains('privacy-active');
+            
+            if (forceState !== null) {
+                isActive = !forceState; // Invertimos porque el bloque IF de abajo es para activar
+            }
+
+            if (!isActive) {
+                // ACTIVAR PRIVACIDAD
+                body.classList.add('privacy-active');
+                localStorage.setItem('privacyMode', 'true');
+                
+                // Reemplazar HTML del botón para cambiar icono y texto
+                btn.innerHTML = '<i data-lucide="eye-off" class="w-5 h-5"></i><span class="hidden sm:inline ml-2">Privacidad</span>';
+            } else {
+                // DESACTIVAR PRIVACIDAD
+                body.classList.remove('privacy-active');
+                localStorage.setItem('privacyMode', 'false');
+                
+                // Reemplazar HTML del botón
+                btn.innerHTML = '<i data-lucide="eye" class="w-5 h-5"></i><span class="hidden sm:inline ml-2">Privacidad</span>';
+            }
+            
+            // Importante: Volver a renderizar los iconos de Lucide después de cambiar el HTML
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
 
 
         function loadDataForCurrentMonth() {
@@ -1145,7 +1140,6 @@
             if (appElements.filterCategory) appElements.filterCategory.value = "all";
             
             updateDateDisplay();
-            // MEJORA 4
 
             const start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
@@ -1168,8 +1162,8 @@
             appElements.totalNecessarySpending.textContent = formatCurrency(necessary);
             appElements.totalUnnecessarySpending.textContent = formatCurrency(unnecessary);
 
-            appElements.totalMonthBalance.classList.remove('text-indigo-600', 'text-red-600', 'text-gray-800');
-            if (balance > 0) appElements.totalMonthBalance.classList.add('text-indigo-600');
+            appElements.totalMonthBalance.classList.remove('text-indigo-600', 'text-red-600', 'text-gray-800', 'text-teal-600');
+            if (balance > 0) appElements.totalMonthBalance.classList.add('text-teal-600');
             else if (balance < 0) appElements.totalMonthBalance.classList.add('text-red-600');
             else appElements.totalMonthBalance.classList.add('text-gray-800');
             renderBudgetProgress();
@@ -1204,43 +1198,53 @@
             }, (e) => showError('Error', 'No se cargaron gastos.'));
         }
         
+        // RENDER EXPENSES ACTUALIZADO (Animación + Empty State + Privacy Class)
         function renderExpenses(expenses) {
             appElements.expensesList.innerHTML = '';
+            
             if (expenses.length === 0) {
-                const searchTerm = appElements.searchTerm.value;
-                const categoryFilter = appElements.filterCategory.value;
-                if(searchTerm !== "" || categoryFilter !== "all") {
-                    appElements.noExpensesMessage.textContent = "No se encontraron resultados para tu búsqueda.";
-                } else {
-                    appElements.noExpensesMessage.textContent = "No has registrado ningún gasto este mes.";
-                }
-                appElements.expensesList.appendChild(appElements.noExpensesMessage);
-            }
-            else expenses.forEach(ex => {
-                const badge = (ex.recurrence!=='none'||ex.isRecurrentInstance) ? `<span class...">${ex.recurrence!=='none'?'Original':'Recurrente'}</span>` : '';
-                const li = document.createElement('li');
-                li.className = 'flex items-center justify-between p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700';
-                li.innerHTML = 
-                `
-                    <div class="flex items-center space-x-3">
-                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${getCategoryColor(ex.category)}">${ex.category||'General'}</span>
-                        <div><p class="font-medium text-gray-800 dark:text-gray-100">${ex.description} ${badge}</p><span class="text-sm ${ex.isNecessary ? 'text-gray-500' : 'text-red-600'}">${ex.isNecessary ? 'Necesario' : 'Innecesario'}</span></div>
-         
+                // ESTADO VACÍO CON ICONO
+                appElements.expensesList.innerHTML = `
+                <div class="flex flex-col items-center justify-center p-8 text-center animate-slide-up">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-full mb-3">
+                        <i data-lucide="receipt" class="w-8 h-8 text-gray-400 dark:text-gray-500"></i>
                     </div>
-                    <div class="text-right flex items-center space-x-3">
-                        <p class="font-semibold ${ex.isNecessary ?
-                        'text-gray-900 dark:text-gray-100' : 'text-red-600'}"> - ${formatCurrency(ex.amount)}</p>
-                        
-                        <button data-id="${ex.id}" data-description="${ex.description}" data-amount="${ex.amount}" data-category="${ex.category}" data-isnecessary="${ex.isNecessary}" data-recurrence="${ex.recurrence || 'none'}" class="edit-expense-btn text-gray-400 hover:text-indigo-600 p-1" title="Editar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 pointer-events-none"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                        </button>
-                        
-                        <button data-id="${ex.id}" data-description="${ex.description}" class="delete-expense-btn text-gray-400 hover:text-red-600 p-1" title="Eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 pointer-events-none"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                        </button>
-                    </div>`;
-                appElements.expensesList.appendChild(li);
-            });
+                    <p class="text-gray-500 dark:text-gray-400 font-medium">No hay gastos registrados</p>
+                    <p class="text-sm text-gray-400 mt-1">Tus transacciones aparecerán aquí</p>
+                </div>`;
+            } else {
+                expenses.forEach((ex, index) => {
+                    const badge = (ex.recurrence!=='none'||ex.isRecurrentInstance) ? `<span class="ml-2 text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">${ex.recurrence!=='none'?'Original':'Recurrente'}</span>` : '';
+                    const li = document.createElement('li');
+                    
+                    // AÑADIDA CLASE DE ANIMACIÓN
+                    li.className = 'flex items-center justify-between p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700 animate-slide-up';
+                    
+                    // DELAY EN CASCADA
+                    li.style.animationDelay = `${index * 0.05}s`; 
+                    
+                    li.innerHTML = 
+                    `
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${getCategoryColor(ex.category)}">${ex.category||'General'}</span>
+                            <div><p class="font-medium text-gray-800 dark:text-gray-100">${ex.description} ${badge}</p><span class="text-sm ${ex.isNecessary ? 'text-gray-500' : 'text-red-600'}">${ex.isNecessary ? 'Necesario' : 'Innecesario'}</span></div>
+                        </div>
+                        <div class="text-right flex items-center space-x-3">
+                            <p class="font-semibold ${ex.isNecessary ? 'text-gray-900 dark:text-gray-100' : 'text-red-600'} privacy-sensitive"> - ${formatCurrency(ex.amount)}</p>
+                            
+                            <button data-id="${ex.id}" data-description="${ex.description}" data-amount="${ex.amount}" data-category="${ex.category}" data-isnecessary="${ex.isNecessary}" data-recurrence="${ex.recurrence || 'none'}" class="edit-expense-btn text-gray-400 hover:text-teal-600 p-1" title="Editar">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 pointer-events-none"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                            </button>
+                            
+                            <button data-id="${ex.id}" data-description="${ex.description}" class="delete-expense-btn text-gray-400 hover:text-red-600 p-1" title="Eliminar">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 pointer-events-none"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                            </button>
+                        </div>`;
+                    appElements.expensesList.appendChild(li);
+                });
+            }
+            // Renderizamos los iconos inyectados
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function handleExpensesListClick(e) {
@@ -1250,8 +1254,7 @@
             if (edit) openEditExpenseModal(edit);
         }
 
-        function 
-            handleDeleteExpense(btn) {
+        function handleDeleteExpense(btn) {
             const id = btn.dataset.id;
             const desc = btn.dataset.description; 
             toggleConfirmModal(true, `¿Eliminar gasto: "${desc}"?`, async () => {
@@ -1273,36 +1276,45 @@
             }, (e) => showError('Error', 'No se cargaron ingresos.'));
         }
 
+        // RENDER INCOME ACTUALIZADO (Animación + Empty State + Privacy Class)
         function renderIncome(incomes) {
             appElements.incomeList.innerHTML = '';
+            
             if (incomes.length === 0) {
-                const searchTerm = appElements.searchTerm.value;
-                if(searchTerm !== "") {
-                    appElements.noIncomeMessage.textContent = "No se encontraron resultados para tu búsqueda.";
-                } else {
-                    appElements.noIncomeMessage.textContent = "No has registrado ningún ingreso este mes.";
-                }
-                appElements.incomeList.appendChild(appElements.noIncomeMessage);
+                // ESTADO VACÍO CON ICONO
+                appElements.incomeList.innerHTML = `
+                <div class="flex flex-col items-center justify-center p-8 text-center animate-slide-up">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-full mb-3">
+                        <i data-lucide="wallet" class="w-8 h-8 text-gray-400 dark:text-gray-500"></i>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 font-medium">No hay ingresos registrados</p>
+                    <p class="text-sm text-gray-400 mt-1">Tus entradas de dinero aparecerán aquí</p>
+                </div>`;
+            } else {
+                incomes.forEach((inc, index) => {
+                    const li = document.createElement('li');
+                    
+                    // ANIMACIÓN
+                    li.className = 'flex items-center justify-between p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700 animate-slide-up';
+                    li.style.animationDelay = `${index * 0.05}s`;
+
+                    li.innerHTML = `
+                        <div><p class="font-medium text-gray-800 dark:text-gray-100">${inc.description}</p><span class="text-sm text-gray-500">Ingreso</span></div>
+                        <div class="text-right flex items-center space-x-3">
+                            <p class="font-semibold text-green-600 privacy-sensitive">+ ${formatCurrency(inc.amount)}</p>
+                            
+                            <button data-id="${inc.id}" data-description="${inc.description}" data-amount="${inc.amount}" class="edit-income-btn text-gray-400 hover:text-teal-600 p-1" title="Editar">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 pointer-events-none"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                            </button>
+                            
+                            <button data-id="${inc.id}" data-description="${inc.description}" class="delete-income-btn text-gray-400 hover:text-red-600 p-1" title="Eliminar">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 pointer-events-none"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                            </button>
+                        </div>`;
+                    appElements.incomeList.appendChild(li);
+                });
             }
-            else incomes.forEach(inc => {
-                const li = document.createElement('li');
-                li.className = 'flex items-center justify-between p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700';
-                li.innerHTML = `
-                    <div><p class="font-medium text-gray-800 dark:text-gray-100">${inc.description}</p><span 
-                        class="text-sm text-gray-500">Ingreso</span></div>
-                    <div class="text-right flex items-center space-x-3">
-                        <p class="font-semibold text-green-600">+ ${formatCurrency(inc.amount)}</p>
-                        
-                        <button data-id="${inc.id}" data-description="${inc.description}" data-amount="${inc.amount}" class="edit-income-btn text-gray-400 hover:text-indigo-600 p-1" title="Editar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 pointer-events-none"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                        </button>
-                        
-                        <button data-id="${inc.id}" data-description="${inc.description}" class="delete-income-btn text-gray-400 hover:text-red-600 p-1" title="Eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 pointer-events-none"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                        </button>
-                    </div>`;
-                appElements.incomeList.appendChild(li);
-            });
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function handleIncomeListClick(e) {
@@ -1329,37 +1341,56 @@
             }, (e) => showError('Error', 'No se cargaron metas.'));
         }
         
+        // RENDER GOALS ACTUALIZADO (Animación + Empty State + Monto Restante + Privacy Class)
         function renderGoals(goals) {
             appElements.goalsList.innerHTML = '';
-            if (goals.length === 0) appElements.goalsList.appendChild(appElements.noGoalsMessage.cloneNode(true));
-            else goals.forEach(g => {
-                const pct = g.targetAmount > 0 ? (g.currentAmount / g.targetAmount) * 100 : 0;
-                const li = document.createElement('li');
-                li.className = 'bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700';
-                li.innerHTML = `
- 
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-lg font-semibold text-gray-800 dark:text-gray-100">${g.name}</span>
-                        <div class="flex items-center space-x-3">
-                      
-                            <button data-id="${g.id}" data-name="${g.name}" data-target="${g.targetAmount}" data-current="${g.currentAmount}" class="edit-goal-btn text-gray-400 hover:text-indigo-600" title="Editar">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 pointer-events-none"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                            </button>
-                            
-                            <button data-id="${g.id}" data-name="${g.name}" class="delete-goal-btn text-gray-400 hover:text-red-600" title="Eliminar">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 pointer-events-none"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                            </button>
-                        </div>
-                    
-                    </div>
-                    <div class="flex justify-between items-baseline mb-3"><span class="text-sm font-medium text-indigo-600">Ahorrado: ${formatCurrency(g.currentAmount)}</span><span class="text-sm text-gray-500 dark:text-gray-300">Meta: ${formatCurrency(g.targetAmount)}</span></div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2"><div class="bg-indigo-500 h-2.5 rounded-full" style="width: ${pct}%"></div></div>
-                    <div class="text-right text-sm text-gray-500 dark:text-gray-400 mb-4">${pct.toFixed(0)}% completado</div>
             
-                    <button data-id="${g.id}" data-name="${g.name}" class="add-to-goal-btn w-full bg-indigo-50 text-indigo-700 py-2 px-4 rounded-md font-semibold border border-indigo-200 hover:bg-indigo-100">Abonar a esta meta</button>
-                `;
-                appElements.goalsList.appendChild(li);
-            });
+            if (goals.length === 0) {
+                 // ESTADO VACÍO CON ICONO
+                appElements.goalsList.innerHTML = `
+                <li class="flex flex-col items-center justify-center p-8 text-center bg-white rounded-lg shadow border border-gray-200 dark:bg-gray-800 dark:border-gray-700 animate-slide-up">
+                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-full mb-3">
+                        <i data-lucide="piggy-bank" class="w-8 h-8 text-gray-400 dark:text-gray-500"></i>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 font-medium">No hay metas de ahorro</p>
+                    <p class="text-sm text-gray-400 mt-1">¡Empieza a ahorrar para tu futuro!</p>
+                </li>`;
+            } else {
+                goals.forEach((g, index) => {
+                    const pct = g.targetAmount > 0 ? (g.currentAmount / g.targetAmount) * 100 : 0;
+                    const remaining = Math.max(0, g.targetAmount - g.currentAmount);
+                    
+                    const li = document.createElement('li');
+                    
+                    // ANIMACIÓN
+                    li.className = 'bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium animate-slide-up';
+                    li.style.animationDelay = `${index * 0.1}s`;
+
+                    li.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-lg font-semibold text-gray-800 dark:text-gray-100">${g.name}</span>
+                            <div class="flex items-center space-x-3">
+                                <button data-id="${g.id}" data-name="${g.name}" data-target="${g.targetAmount}" data-current="${g.currentAmount}" class="edit-goal-btn text-gray-400 hover:text-teal-600" title="Editar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 pointer-events-none"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                </button>
+                                <button data-id="${g.id}" data-name="${g.name}" class="delete-goal-btn text-gray-400 hover:text-red-600" title="Eliminar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 pointer-events-none"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-baseline mb-3"><span class="text-sm font-medium text-teal-600 privacy-sensitive">Ahorrado: ${formatCurrency(g.currentAmount)}</span><span class="text-sm text-gray-500 dark:text-gray-300 privacy-sensitive">Meta: ${formatCurrency(g.targetAmount)}</span></div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2"><div class="bg-teal-500 h-2.5 rounded-full" style="width: ${pct}%"></div></div>
+                        
+                        <div class="flex justify-between text-sm mb-4">
+                             <span class="text-gray-500 dark:text-gray-400 privacy-sensitive">Faltan: <span class="font-semibold text-gray-700 dark:text-gray-200">${formatCurrency(remaining)}</span></span>
+                             <span class="text-gray-500 dark:text-gray-400">${pct.toFixed(0)}% completado</span>
+                        </div>
+
+                        <button data-id="${g.id}" data-name="${g.name}" class="add-to-goal-btn w-full bg-teal-50 text-teal-700 py-2 px-4 rounded-md font-semibold border border-teal-200 hover:bg-teal-100">Abonar a esta meta</button>
+                    `;
+                    appElements.goalsList.appendChild(li);
+                });
+            }
             // Ya no es necesario llamar a lucide.createIcons() aquí
         }
         
@@ -1401,7 +1432,7 @@
             if (!isNaN(targetVal) && targetVal > 0) target = targetVal;
             else target = currentBudgets.incomeTarget || 0;
             const remaining = target - assigned;
-            appElements.remainingBudgetSummary.innerHTML = `Asignados: ${formatCurrency(assigned)} / Objetivo: ${formatCurrency(target)} <span class="${remaining < 0 ? 'text-red-500' : 'text-gray-600'}">(${remaining < 0 ? 'Exceso' : 'Restante'}: ${formatCurrency(Math.abs(remaining))})</span>`;
+            appElements.remainingBudgetSummary.innerHTML = `<span class="privacy-sensitive">Asignados: ${formatCurrency(assigned)} / Objetivo: ${formatCurrency(target)}</span> <span class="${remaining < 0 ? 'text-red-500' : 'text-gray-600'} privacy-sensitive">(${remaining < 0 ? 'Exceso' : 'Restante'}: ${formatCurrency(Math.abs(remaining))})</span>`;
         }
         
         async function saveBudgetsToFirestore(data) {
@@ -1425,15 +1456,13 @@
 
         function renderBudgetForm() {
             if (appElements.budgetIncomeTarget) {
-                const val = currentBudgets.incomeTarget ||
-                '';
+                const val = currentBudgets.incomeTarget || '';
                 appElements.budgetIncomeTarget.value = val ? new Intl.NumberFormat('es-CL').format(val) : '';
             }
             for (const cat of categories) {
                 const el = appElements[`budget-${cat}`];
                 if (el) {
-                    const val = currentBudgets[cat] ||
-                    '';
+                    const val = currentBudgets[cat] || '';
                     el.value = val ? new Intl.NumberFormat('es-CL').format(val) : '';
                 }
             }
@@ -1451,8 +1480,7 @@
             });
             let budgetsDefined = false;
             for (const cat of categories) {
-                const budgetAmount = currentBudgets[cat] ||
-                0;
+                const budgetAmount = currentBudgets[cat] || 0;
                 if (budgetAmount === 0) continue; 
                 budgetsDefined = true;
                 const spentAmount = categoryTotals[cat] || 0;
@@ -1460,17 +1488,13 @@
                 let visualPercentage = Math.min(rawPercentage, 100);
 
                 let barColorClass = 'bg-green-500';
-                // Verde (0-50%)
                 let textColorClass = 'text-gray-500 dark:text-gray-400';
-                // Texto normal
 
                 if (rawPercentage > 80) {
                     barColorClass = 'bg-red-500';
-                    // Rojo (> 80%)
                     textColorClass = 'text-red-600 font-semibold';
                 } else if (rawPercentage > 50) {
                     barColorClass = 'bg-yellow-500';
-                    // Amarillo (51-80%)
                     textColorClass = 'text-yellow-600 font-semibold';
                 }
                 
@@ -1481,9 +1505,8 @@
                 const progressElement = document.createElement('div');
                 progressElement.innerHTML = `
                     <div>
-                        <div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">${cat}</span><span class="text-sm font-medium ${textColorClass}">${formatCurrency(spentAmount)} / ${formatCurrency(budgetAmount)}</span></div>
+                        <div class="flex justify-between mb-1"><span class="text-sm font-medium text-gray-700 dark:text-gray-300">${cat}</span><span class="text-sm font-medium ${textColorClass} privacy-sensitive">${formatCurrency(spentAmount)} / ${formatCurrency(budgetAmount)}</span></div>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700"><div class="${barColorClass} h-2.5 rounded-full transition-all duration-300" style="width: ${visualPercentage}%"></div></div>
-      
                     </div>`;
                 appElements.budgetProgressList.appendChild(progressElement);
             }
@@ -1495,11 +1518,43 @@
             const categoryTotals = {};
             expenses.forEach(e => { const c = e.category || 'General'; if (!categoryTotals[c]) categoryTotals[c] = 0; categoryTotals[c] += e.amount; });
             const labels = Object.keys(categoryTotals), dataValues = Object.values(categoryTotals);
-            const chartColors = ['#4F46E5','#3B82F6','#059669','#DB2777','#D97706','#0E7490','#6B7280'];
+            // PALETA DE COLORES (Dorado, Verde, Teal)
+            const chartColors = [
+                '#F59E0B', // Dorado
+                '#10B981', // Esmeralda
+                '#0D9488', // Teal
+                '#3B82F6', // Azul
+                '#EF4444', // Rojo suave
+                '#8B5CF6', // Violeta
+                '#64748B'  // Gris Pizarra
+            ];
             const data = { labels: labels, datasets: [{ data: dataValues, backgroundColor: chartColors, borderColor: '#FFF', borderWidth: 2 }] };
             if (expenseChartInstance) expenseChartInstance.destroy();
             expenseChartInstance = new Chart(appElements.expenseChartCanvas.getContext('2d'), {
-                type: 'pie', data: data, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }, plugins: [ChartDataLabels]
+                type: 'pie', data: data, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } },
+                    // --- INTERACTIVIDAD: Click-to-Filter ---
+                    onClick: (e, elements, chart) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const category = chart.data.labels[index];
+                            
+                            if (appElements.filterCategory) {
+                                // Actualiza el filtro visualmente
+                                appElements.filterCategory.value = category;
+                                // Ejecuta el filtrado de la lista
+                                renderFilteredTransactions();
+                                // Notifica al usuario
+                                showToast(`Filtrando por: ${category}`);
+                            }
+                        }
+                    }
+                    // ---------------------------------------
+                }, 
+                plugins: [ChartDataLabels]
             });
         }
         
@@ -1525,18 +1580,22 @@
             if (!appElements.historyChartCanvas) return;
             const { labels, incomeData, expenseData } = historyData;
             const textColor = getChartTextColor();
-            const data = { labels, datasets: [ { label: 'Ingresos', data: incomeData, backgroundColor: 'rgb(34, 197, 94)', borderRadius: 4 }, { label: 'Gastos', data: expenseData, backgroundColor: 'rgb(220, 38, 38)', borderRadius: 4 } ] };
+            const data = { 
+                labels, 
+                datasets: [ 
+                    { label: 'Ingresos', data: incomeData, backgroundColor: '#0D9488', borderRadius: 4 }, // Teal oscuro
+                    { label: 'Gastos', data: expenseData, backgroundColor: 'rgb(220, 38, 38)', borderRadius: 4 } 
+                ] 
+            };
             if (historyChartInstance) historyChartInstance.destroy();
             historyChartInstance = new Chart(appElements.historyChartCanvas.getContext('2d'), {
                 type: 'bar', data: data,
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { position: 'top', labels: { color: textColor } } },
-  
                     scales: {
                         x: { grid: { color: textColor + '30' }, ticks: { color: textColor } },
-                        y: { beginAtZero: true, grid: { color: textColor + '30' }, ticks: { color: textColor, callback: (v) => '$' 
-                        + new Intl.NumberFormat('es-CL').format(v) } }
+                        y: { beginAtZero: true, grid: { color: textColor + '30' }, ticks: { color: textColor, callback: (v) => '$' + new Intl.NumberFormat('es-CL').format(v) } }
                     }
                 }
             });
@@ -1555,7 +1614,6 @@
                     const load = document.getElementById('loading-view');
                     if (load && load.classList.contains('activa')) {
                         const txt = document.getElementById('loading-text');
-                        
                         if (txt) txt.textContent = "Tarda mucho... ¿Conexión?";
                         if (forceLoginBtn) forceLoginBtn.classList.remove('hidden');
                     }
@@ -1564,10 +1622,10 @@
 
                 // --- Setup Listeners (con verificación) ---
                 if(links.showRegister) links.showRegister.onclick = (e) => { e.preventDefault();
-                    hideAuthErrors(); showView('register'); };
+                hideAuthErrors(); showView('register'); };
                 if(links.showLogin) links.showLogin.onclick = (e) => { e.preventDefault(); hideAuthErrors(); showView('login'); };
                 if(links.showResetPassword) links.showResetPassword.onclick = (e) => { e.preventDefault();
-                    toggleResetPasswordModal(true); };
+                toggleResetPasswordModal(true); };
                 
                 if(authForms.login) authForms.login.onsubmit = handleLogin;
                 if(authForms.register) authForms.register.onsubmit = handleRegister;
@@ -1579,13 +1637,10 @@
                 if (appElements.setLightModeBtn) appElements.setLightModeBtn.onclick = () => { applyTheme('light'); toggleDarkModeMenu(); };
                 if (appElements.setDarkModeBtn) appElements.setDarkModeBtn.onclick = () => { applyTheme('dark'); toggleDarkModeMenu(); };
                 if (appElements.setSystemModeBtn) appElements.setSystemModeBtn.onclick = () => { applyTheme('system'); toggleDarkModeMenu(); };
-                
                 document.addEventListener('click', (e) => {
                     if (appElements.darkModeDropdownContainer && appElements.darkModeMenu && !appElements.darkModeDropdownContainer.contains(e.target) && !appElements.darkModeMenu.classList.contains('hidden')) {
                         appElements.darkModeMenu.classList.add('hidden');
                     }
-                    // MEJORA 4: Clic para 
-                    // cerrar dropdowns de fecha
                     closeDropdowns(e);
                 });
                 if(appElements.showAddExpenseModalButton) appElements.showAddExpenseModalButton.onclick = openAddExpenseModal;
@@ -1612,7 +1667,6 @@
                 categories.forEach(cat => {
                     const input = appElements[`budget-${cat}`];
                     if (input) { 
-                  
                         input.oninput = formatNumberInput;
                         input.addEventListener('input', updateBudgetSummaryDisplay);
                     }
@@ -1628,18 +1682,15 @@
                     button.onclick = () => {
                         appElements.tabButtons.forEach(btn => btn.classList.remove('activa'));
                         appElements.tabContents.forEach(content => content.classList.remove('activa'));
-                  
                         button.classList.add('activa');
                         if(document.getElementById(button.id.replace('-tab', '-content'))) {
                             document.getElementById(button.id.replace('-tab', '-content')).classList.add('activa');
                         }
                         
-                        // CORRECCIÓN: Llamar a Lucide CADA VEZ que se cambia de pestaña
                         if (typeof lucide !== 'undefined') lucide.createIcons();
-               
                     };
                 });
-                // MEJORA 4: Listeners para los botones y dropdowns de fecha
+                
                 if(appElements.monthPickerBtn) appElements.monthPickerBtn.onclick = () => toggleMonthDropdown();
                 if(appElements.yearPickerBtn) appElements.yearPickerBtn.onclick = () => toggleYearDropdown();
                 if(appElements.monthDropdown) appElements.monthDropdown.onclick = handleMonthSelect;
@@ -1654,10 +1705,39 @@
                 if(appElements.incomeList) appElements.incomeList.addEventListener('click', handleIncomeListClick);
                 if(appElements.goalsList) appElements.goalsList.addEventListener('click', handleGoalsListClick);
 
-                // Inputs de formato numérico
                 [appElements.expenseAmount, appElements.incomeAmount, addGoalModal.target, addGoalModal.current, addToGoalModal.amount].forEach(el => {
                     if (el) el.oninput = formatNumberInput;
                 });
+
+                // LÓGICA NUEVA: Botón Flotante (FAB)
+                const fabTrigger = document.getElementById('fab-trigger');
+                const fabMenu = document.getElementById('fab-menu');
+                const fabIconPlus = document.getElementById('fab-icon-plus');
+                const fabIconClose = document.getElementById('fab-icon-close');
+
+                if (fabTrigger) {
+                    fabTrigger.onclick = () => {
+                        const isHidden = fabMenu.classList.contains('hidden');
+                        if (isHidden) {
+                            fabMenu.classList.remove('hidden');
+                            fabMenu.classList.remove('scale-90', 'opacity-0'); // Animación entrada
+                            fabIconPlus.classList.add('opacity-0', 'rotate-90');
+                            fabIconClose.classList.remove('opacity-0', '-rotate-90');
+                        } else {
+                            fabMenu.classList.add('hidden');
+                            fabMenu.classList.add('scale-90', 'opacity-0');
+                            fabIconPlus.classList.remove('opacity-0', 'rotate-90');
+                            fabIconClose.classList.add('opacity-0', '-rotate-90');
+                        }
+                    };
+                }
+                
+                // LISTENER PARA MODO PRIVACIDAD (Con manejo de estado)
+                const privacyToggle = document.getElementById('privacy-toggle');
+                if (privacyToggle) {
+                    privacyToggle.onclick = () => togglePrivacyMode();
+                }
+
                 setupAuthObserver();
             } catch (error) {
                 console.error("Error crítico en main:", error);
@@ -1667,6 +1747,6 @@
         }
         
         document.addEventListener('DOMContentLoaded', main);
-    </script>
+</script>
 </body>
 </html>
