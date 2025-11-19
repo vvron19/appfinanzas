@@ -38,7 +38,7 @@
     </script>
 
     <style>
-        /* MODO PRIVACIDAD: Fuerza el desenfoque */
+        /* MODO PRIVACIDAD */
         body.privacy-active .privacy-sensitive {
             filter: blur(8px) !important;
             -webkit-filter: blur(8px) !important;
@@ -46,16 +46,18 @@
             cursor: default;
             transition: filter 0.3s ease;
         }
-        
-        .privacy-sensitive {
-            transition: filter 0.3s ease;
-        }
+        .privacy-sensitive { transition: filter 0.3s ease; }
 
-        /* Animaciones */
+        /* ANIMACIONES */
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-slide-up { animation: slideUpFade 0.5s ease-out forwards; opacity: 0; }
         
-        /* Pestañas Simples (Sin animación compleja para evitar bloqueos) */
+        /* Control de Vistas */
+        .vista { display: none !important; }
+        #loading-view.activa, #login-view.activa, #register-view.activa { display: flex !important; }
+        #main-app-view.activa { display: block !important; }
+
+        /* Pestañas */
         .tab-content { display: none; }
         .tab-content.activa { display: block; }
     </style>
@@ -63,15 +65,11 @@
     <style type="text/tailwindcss">
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-        
         .toast { animation: slideInRight 0.3s ease-out forwards; }
         .toast.hiding { animation: fadeOut 0.3s ease-in forwards; }
         
         body { font-family: 'Inter', sans-serif; @apply dark:bg-gray-900; }
-        .vista { display: none; }
-        #loading-view.activa, #login-view.activa, #register-view.activa { display: flex; }
-        #main-app-view.activa { display: block; }
-
+        
         .modal { display: none; }
         .modal.activa { display: flex; }
 
@@ -123,7 +121,6 @@
         <div id="login-view" class="vista items-center justify-center min-h-screen p-4">
             <div class="w-full max-w-md">
                 <h1 class="text-4xl font-bold text-white text-center mb-8" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.6);">Gestor de Finanzas</h1>
-    
                 <div class="bg-white p-8 rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                     <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8">Iniciar Sesión</h2>
                     <form id="login-form" class="space-y-6">
@@ -154,7 +151,8 @@
             </div>
         </div>
 
-        <div id="main-app-view" class="vista bg-gray-100 dark:bg-gray-900">
+        <div id="main-app-view" class="vista bg-gray-100 dark:bg-gray-900 relative">
+            
             <header class="bg-gradient-to-r from-teal-800 to-emerald-500 shadow-lg sticky top-0 z-30">
                 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between items-center h-16">
@@ -191,7 +189,7 @@
                         <button id="presupuestos-tab" class="tab-button whitespace-nowrap py-4 px-4 border-b-4 font-medium text-lg">Presupuestos</button>
                     </nav>
                 </div>
-            </div >
+            </div>
 
             <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
                 <div id="resumen-content" class="tab-content activa">
@@ -237,7 +235,6 @@
                         <button id="show-add-expense-modal-button" class="w-full bg-teal-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200 flex items-center justify-center space-x-2"><svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Registrar Nuevo Gasto</span></button>
                     </section>
                     <div class="mb-8"><button id="export-csv-btn" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-md shadow-lg flex items-center justify-center transition-colors duration-200 border border-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>Descargar Reporte Mensual (.csv)</button></div>
-                    
                     <section id="filter-section" class="mb-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700">
                         <div class="flex flex-col md:flex-row gap-4">
                             <div class="flex-1 relative">
@@ -261,7 +258,6 @@
                             </div>
                         </div>
                     </section>
-
                     <section id="income-history-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Historial de Ingresos</h2><div class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700"><ul id="income-list" class="divide-y divide-gray-200 dark:divide-gray-700"></ul></div></section>
                     <section id="expenses-history-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Historial de Gastos</h2><div class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700"><ul id="expenses-list" class="divide-y divide-gray-200 dark:divide-gray-700"></ul></div></section>
                 </div>
@@ -274,31 +270,32 @@
                     <section id="budget-section" class="mb-8"><h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Definir Presupuestos Mensuales</h2><div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 card-premium"><div class="mb-6 space-y-4"><label for="budget-income-target" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ingreso Mensual Objetivo ($)</label><input type="text" id="budget-income-target" inputmode="numeric" required class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 text-lg font-bold" placeholder="Ej: 500.000"><p id="remaining-budget-summary" class="text-sm font-semibold text-gray-600 dark:text-gray-400">Total de Presupuestos Asignados: $0 / Ingreso Objetivo: $0.00</p></div><p class="text-gray-600 dark:text-gray-300 mb-6">Establece un límite de gasto mensual para cada categoría.</p><form id="budget-form" class="space-y-4"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Alimentación ($)</label><input type="text" id="budget-Alimentación" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Transporte ($)</label><input type="text" id="budget-Transporte" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Vivienda ($)</label><input type="text" id="budget-Vivienda" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Estudios ($)</label><input type="text" id="budget-Estudios" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ocio ($)</label><input type="text" id="budget-Ocio" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Otros ($)</label><input type="text" id="budget-Otros" inputmode="numeric" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div></div><button type="submit" class="w-full bg-teal-600 text-white py-3 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200">Guardar Presupuestos</button></form></div></section>
                 </div>
             </main>
-        </div>
-        
-        <button id="ai-bubble-button" title="Asistente de IA"
-            class="fixed bottom-6 left-6 bg-teal-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-700 transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 z-30">
-            <img src="https://cdn-icons-png.flaticon.com/512/1698/1698535.png" alt="AI Robot Logo" class="w-10 h-10 object-contain">
-        </button>
 
-        <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end space-y-3">
-            <div id="fab-menu" class="flex flex-col items-end space-y-3 hidden transition-all duration-300 origin-bottom transform scale-90">
-                <button onclick="document.getElementById('show-add-income-modal-button').click()" class="flex items-center bg-green-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-green-700 transition-colors">
-                    <span class="mr-2 text-sm font-bold">Ingreso</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-                </button>
-                <button onclick="document.getElementById('show-add-expense-modal-button').click()" class="flex items-center bg-red-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-red-700 transition-colors">
-                    <span class="mr-2 text-sm font-bold">Gasto</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            <button id="ai-bubble-button" title="Asistente de IA"
+                class="fixed bottom-6 left-6 bg-teal-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-700 transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 z-30">
+                <img src="https://cdn-icons-png.flaticon.com/512/1698/1698535.png" alt="AI Robot Logo" class="w-10 h-10 object-contain">
+            </button>
+
+            <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end space-y-3">
+                <div id="fab-menu" class="flex flex-col items-end space-y-3 hidden transition-all duration-300 origin-bottom transform scale-90">
+                    <button onclick="document.getElementById('show-add-income-modal-button').click()" class="flex items-center bg-green-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-green-700 transition-colors">
+                        <span class="mr-2 text-sm font-bold">Ingreso</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                    <button onclick="document.getElementById('show-add-expense-modal-button').click()" class="flex items-center bg-red-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-red-700 transition-colors">
+                        <span class="mr-2 text-sm font-bold">Gasto</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                </div>
+                
+                <button id="fab-trigger" class="bg-gradient-to-r from-teal-600 to-emerald-500 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-teal-300">
+                    <svg id="fab-icon-plus" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <svg id="fab-icon-close" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 absolute opacity-0 transition-transform duration-300 rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
-            
-            <button id="fab-trigger" class="bg-gradient-to-r from-teal-600 to-emerald-500 text-white w-16 h-16 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-teal-300">
-                <svg id="fab-icon-plus" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <svg id="fab-icon-close" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 absolute opacity-0 transition-transform duration-300 rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-        </div>
 
+        </div>
+        
         <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
         <div id="expense-form-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-40 items-center justify-center p-4"><div class="bg-white w-full max-w-md p-6 rounded-lg shadow-xl dark:bg-gray-800"><h3 id="expense-form-title" class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">Registrar Nuevo Gasto</h3><form id="add-expense-form" class="space-y-4"><input type="hidden" id="expense-form-id"><div><label for="expense-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción del Gasto</label><input type="text" id="expense-description" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="Ej: Materiales de estudio"></div><div><label for="expense-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Monto ($)</label><input type="text" id="expense-amount" inputmode="numeric" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" placeholder="0"></div><div><label for="expense-category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label><select id="expense-category" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"><option value="" disabled selected>Selecciona una categoría</option><option value="Alimentación">Alimentación</option><option value="Transporte">Transporte</option><option value="Vivienda">Vivienda</option><option value="Estudios">Estudios</option><option value="Ocio">Ocio</option><option value="Otros">Otros</option></select></div><div class="flex items-center mb-4"><input id="expense-necessary" type="checkbox" class="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"><label for="expense-necessary" class="ml-2 block text-sm text-gray-800 dark:text-gray-300">¿Es un gasto necesario?</label></div><div><label for="expense-recurrence" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Periodicidad</label><select id="expense-recurrence" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"><option value="none">Una sola vez</option><option value="monthly">Mensual</option><option value="yearly">Anual</option></select></div><div class="flex gap-4 pt-4"><button type="button" id="cancel-expense-form" class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md font-semibold border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancelar</button><button type="submit" id="expense-form-button" class="w-full bg-teal-600 text-white py-2 px-4 rounded-md font-semibold shadow-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">Guardar Gasto</button></div></form></div></div>
